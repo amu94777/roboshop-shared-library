@@ -1,3 +1,4 @@
+   def call(Map configMap){
    pipeline {
         agent {
             node {
@@ -116,3 +117,4 @@
             }
         }
     }
+   }
