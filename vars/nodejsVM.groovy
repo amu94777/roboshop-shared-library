@@ -89,7 +89,7 @@
             stage('Deploy') {
                 when {
                     expression{
-                        params.Deploy
+                        params.Deploy == 'true'
                     }
                 }
                 steps {
