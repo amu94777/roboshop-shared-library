@@ -76,7 +76,7 @@
                         nexusUrl: pipelineGlobals.nexusURL(),
                         groupId: 'com.roboshop',
                         version: "${packageVersion}",
-                        repository: "${configMap.component}",
+                        repository: "catalogue-dev",
                         credentialsId: 'nexus-auth',
                         artifacts: [
                             [artifactId: "${configMap.component}",
