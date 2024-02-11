@@ -12,7 +12,7 @@ pipeline {
             }
      environment { 
         packageVersion = ''
-        nexusURL = '172.31.13.69:8081'
+        //nexusURL = '172.31.13.69:8081'
         
     }
     parameters {
@@ -68,7 +68,7 @@ pipeline {
                                                       ///zip file and i exclude .git and .zip file within that files
                 sh """                                   
                     ls -al 
-                    zip -r -q catalogue.zip ./* -x ".git" - x "*.zip"  
+                    zip -r -q ${configMap.component}.zip ./* -x ".git" - x "*.zip"  
                     ls -ltr                          
                 """                                         ///-q is used for hide the logs in console
                 }                    
@@ -80,15 +80,15 @@ pipeline {
                 nexusArtifactUploader(                            //publish artifacts here
                             nexusVersion: 'nexus3',
                             protocol: 'http',
-                            nexusUrl: "${nexusURL}",
+                            nexusUrl: pipelineGlobals.nexusURL(),
                             groupId: 'com.roboshop',
                             version: "${packageVersion}",         
-                            repository: 'catalogue',
+                            repository: "${configMap.component}",
                             credentialsId: 'nexus-auth',
                             artifacts: [
-                                [artifactId: 'catalogue',
+                                [artifactId: "${configMap.component}",
                                 classifier: '',
-                                file: 'catalogue.zip',
+                                file: "${configMap.component}.zip",
                                 type: 'zip']
                             ]
      )
@@ -107,7 +107,7 @@ pipeline {
                     string(name: 'version', value: "$packageVersion"),    ///we have to pass version and env parameter to catalogue-deploy-1 pipeline
                     string(name: 'environment', value: "dev")              ////catalogue-1 is upsteram job,it uploads the artifactory to nexus it trigger cataloue-deploy-1 job(downstream job)
                 ]
-                build job: "catalogue-deploy-1", wait: true, parameters: params
+                build job: "${configMap.component}-deploy-1", wait: true, parameters: params
             }
         }
     }
